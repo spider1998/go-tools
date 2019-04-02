@@ -1,5 +1,4 @@
 package routing
-
 import (
 	"database/sql"
 
@@ -18,5 +17,3 @@ func IsDBDuplicatedErr(err error) bool {
 func IsDBNotFound(err error) bool {
 	return err == sql.ErrNoRows
 }
-
-

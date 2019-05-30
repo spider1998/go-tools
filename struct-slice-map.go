@@ -148,3 +148,26 @@ func StructToMap(s interface{}, tag string) map[string]string {
 	return params
 }
 
+
+
+func SliceToStruct(list []string, a interface{}) (err error) {
+	v := reflect.ValueOf(a).Elem()
+	for i, k := range list {
+		sv := v.Field(i).Type().String()
+		switch sv {
+		case "int":
+			intK, _ := strconv.Atoi(k)
+			v.Field(i).Set(reflect.ValueOf(intK))
+		case "int8":
+			intK, _ := strconv.Atoi(k)
+			key := int8(intK)
+			v.Field(i).Set(reflect.ValueOf(key))
+		case "string":
+			v.Field(i).Set(reflect.ValueOf(k))
+		default:
+			panic("invalid type " + v.Field(i).Type().String())
+		}
+	}
+	return
+}
+

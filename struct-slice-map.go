@@ -1,10 +1,10 @@
-package routing
+package tools
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 type sliceType int8
@@ -15,10 +15,7 @@ const (
 	sliceString
 )
 
-// Map 可以提取一个结构体切片某个 int 或 string 字段。
-// a := []struct{Foo int}{{1}, {2}}
-// Map(a, "Foo") -> []int{1, 2}
-func MapByField(a interface{}, field string) interface{} {
+func MapByKey(a interface{}, field string) interface{} {
 	T := reflect.TypeOf(a)
 	if T.Kind() != reflect.Slice {
 		panic("only slice allowed in map")
@@ -40,13 +37,13 @@ func MapByField(a interface{}, field string) interface{} {
 	)
 	switch kind {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		ret = make([]int, V.Len())
+		ret = make(map[int]interface{}, V.Len())
 		t = sliceInt
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		ret = make([]int, V.Len())
+		ret = make(map[int]interface{}, V.Len())
 		t = sliceUInt
 	case reflect.String:
-		ret = make([]string, V.Len())
+		ret = make(map[string]interface{}, V.Len())
 		t = sliceString
 	default:
 		panic("invalid type " + kind.String())
@@ -59,11 +56,11 @@ func MapByField(a interface{}, field string) interface{} {
 		}
 		switch t {
 		case sliceInt:
-			ret.([]int)[i] = int(elem.Int())
+			ret.(map[int]interface{})[int(elem.Int())] = V.Index(i).Interface()
 		case sliceUInt:
-			ret.([]int)[i] = int(elem.Uint())
+			ret.(map[int]interface{})[int(elem.Uint())] = V.Index(i).Interface()
 		case sliceString:
-			ret.([]string)[i] = elem.String()
+			ret.(map[string]interface{})[elem.String()] = V.Index(i).Interface()
 		}
 	}
 	return ret
@@ -102,8 +99,6 @@ func SliceAnyToSliceInterface(from interface{}) (to []interface{}) {
 	}
 	return
 }
-
-
 
 //结构体转XML
 func StructToMapXML(s interface{}) map[string]string {
@@ -148,8 +143,6 @@ func StructToMap(s interface{}, tag string) map[string]string {
 	return params
 }
 
-
-
 func SliceToStruct(list []string, a interface{}) (err error) {
 	v := reflect.ValueOf(a).Elem()
 	for i, k := range list {
@@ -170,4 +163,3 @@ func SliceToStruct(list []string, a interface{}) (err error) {
 	}
 	return
 }
-

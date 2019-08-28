@@ -1,4 +1,4 @@
-package routing
+package tools
 
 import (
 	"github.com/astaxie/beego/utils"

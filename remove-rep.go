@@ -1,4 +1,4 @@
-package routing
+package tools
 // 通过两重循环过滤重复元素
 func RemoveRepByLoop(slc []string) []string {
 	result := []string{} // 存放结果
